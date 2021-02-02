@@ -1,41 +1,40 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import TodoItem from "./TodoItem";
 import todosData from "./todosData";
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      todos: todosData,
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
+function App() {
+  
+  const [todos, setTodos] = useState([]);
 
-  handleChange(id) {
-    
-    this.setState(prevState => {
-        const updatedTodos = prevState.todos.map(todo => {
-            if (todo.id === id) {
-                return {
-                    ...todo,
-                    completed: !todo.completed
-                }
+  const getTodos = () => {
+      setTodos(todosData)
+  }
+  
+  const handleChange = (id) => {
+
+    const updatedTodos = todos.map(todo => {
+        if (todo.id === id) {
+            return {
+                ...todo,
+                completed: !todo.completed
             }
-            return todo
-        })
-        return {
-            todos: updatedTodos
         }
+        return todo
     })
+    setTodos(updatedTodos)
   }
 
-  render() {
-    const todoItems = this.state.todos.map((item) => (
-      <TodoItem key={item.id} item={item} handleChange={this.handleChange} />
-    ));
+  useEffect(() => {
+      getTodos()
+  }, [])
 
-    return <div className="todo-list">{todoItems}</div>;
-  }
+  return (
+      <div className="todo-list">
+        {todos.map((item) => (
+            <TodoItem key={item.id} item={item} handleChange={handleChange} />
+        ))}
+      </div>
+  )
 }
 
 export default App;
